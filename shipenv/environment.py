@@ -53,6 +53,8 @@ class ShipEnv(object):
         class Monitor(object):
             def start(self, gym_dir):
                 pass
+            def close(self):
+                pass
 
         self.monitor = Monitor()
 
