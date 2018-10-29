@@ -164,6 +164,7 @@ class ShipEnv(object):
     def _create_other_ships(self):
         self.other_ships.append(OtherShip(start_angle=45, velocity=1, scale=10, center=(245, 280), screen_size=self.screen_size))
         self.other_ships.append(OtherShip(start_angle=270, velocity=1, scale=10, center=(30, 100), screen_size=self.screen_size))
+        self.other_ships.append(OtherShip(start_angle=180, velocity=1, scale=10, center=(200, 20), screen_size=self.screen_size))
 
     def _create_obstacles(self):
         self.static_obstacles.append(Rect(20, 20, 10, 40))
