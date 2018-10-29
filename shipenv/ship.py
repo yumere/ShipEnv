@@ -11,7 +11,7 @@ class Ship(object):
         self.origin_center = center
         self.screen_size = screen_size
 
-        self.origin_img: Surface = pygame.image.load("images/self_ship.png")
+        self.origin_img: Surface = pygame.image.load("assets/self_ship.png")
         self.ship_size = [i // scale for i in self.origin_img.get_size()]
         self.origin_img: Surface = pygame.transform.scale(self.origin_img, self.ship_size)
         self.img: Surface = pygame.transform.scale(self.origin_img, self.ship_size)

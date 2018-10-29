@@ -9,7 +9,7 @@ class OtherShip(object):
         self.velocity = velocity
         self.origin_center = center
         self.screen_size = screen_size
-        self.img: Surface = pygame.image.load("images/other_ship_{}.png".format(start_angle))
+        self.img: Surface = pygame.image.load("assets/other_ship_{}.png".format(start_angle))
         self.ship_size = [i // scale for i in self.img.get_size()]
         self.img: Surface = pygame.transform.scale(self.img, self.ship_size)
 

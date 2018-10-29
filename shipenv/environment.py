@@ -8,9 +8,9 @@ import numpy as np
 import pygame
 from pygame import Rect
 
-from shipenv.action import Action
-from shipenv.othership import OtherShip
-from shipenv.ship import Ship
+from ShipEnv.shipenv import OtherShip
+from ShipEnv.shipenv import Ship
+from ShipEnv.shipenv.action import Action
 
 # Color constants
 BLACK = (0, 0, 0)
@@ -41,7 +41,8 @@ class ShipEnv(object):
         # TODO: destination point need to be placed randomly
         self.dest = Rect(self.screen_size[0] - 20 - 10, 20, 20, 20)
         self.dest_center = self.dest.center
-        self.my_ship = Ship(velocity=2, scale=10, center=(self.screen_size[0] // 2, self.screen_size[1] // 2), screen_size=self.screen_size)
+        # self.my_ship = Ship(velocity=2, scale=10, center=(self.screen_size[0] // 2, self.screen_size[1] // 2), screen_size=self.screen_size)
+        self.my_ship = Ship(velocity=2, scale=10, center=(150, 280), screen_size=self.screen_size)
 
         self.old_dist = math.sqrt(((np.array(self.dest_center) - np.array(self.my_ship.rect.center)) ** 2).sum())
         self.dist = self.old_dist
