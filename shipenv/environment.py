@@ -18,8 +18,9 @@ GRAY = (169, 169, 169)
 RED = (255, 0, 0)
 
 # State constants
-STATE_COLLISION = 0
-STATE_IN_DESTINATION = 1
+STATE_COLLISION_WITH_SHIP = 0
+STATE_COLLISION_WITH_OBSTACLES = 1
+STATE_IN_DESTINATION = 2
 STATE_IN_SAILING = 3
 
 
@@ -41,8 +42,8 @@ class ShipEnv(object):
         # TODO: destination point need to be placed randomly
         self.dest = Rect(self.screen_size[0] - 20 - 10, 20, 20, 20)
         self.dest_center = self.dest.center
-        # self.my_ship = Ship(velocity=2, scale=10, center=(self.screen_size[0] // 2, self.screen_size[1] // 2), screen_size=self.screen_size)
-        self.my_ship = Ship(velocity=2, scale=10, center=(150, 280), screen_size=self.screen_size)
+        self.my_ship = Ship(velocity=2, scale=10, center=(self.screen_size[0] // 2, self.screen_size[1] // 2), screen_size=self.screen_size)
+        # self.my_ship = Ship(velocity=2, scale=10, center=(150, 280), screen_size=self.screen_size)
 
         self.old_dist = math.sqrt(((np.array(self.dest_center) - np.array(self.my_ship.rect.center)) ** 2).sum())
         self.dist = self.old_dist
@@ -85,8 +86,16 @@ class ShipEnv(object):
         self._handle_collisions()
         if self.state == STATE_IN_DESTINATION:
             reward = 1.
-        elif self.state == STATE_COLLISION:
+            terminal = True
+            info = {}
+        elif self.state == STATE_COLLISION_WITH_OBSTACLES:
             reward = -1.
+            terminal = True
+            info = {"collision": "obstacles"}
+        elif self.state == STATE_COLLISION_WITH_SHIP:
+            reward = -1.
+            terminal = True
+            info = {"collision": "ship"}
         elif self.state == STATE_IN_SAILING:
             self.dist = math.sqrt(((np.array(self.dest_center) - np.array(self.my_ship.rect.center)) ** 2).sum())
             if self.old_dist > self.dist:
@@ -94,12 +103,14 @@ class ShipEnv(object):
             else:
                 reward = -0.001
             self.old_dist = self.dist
+            terminal = False
+            info = {}
 
         self._update_screen()
         observation = pygame.surfarray.array3d(self.screen)
 
         # State is either PLAYING OR GAME OVER
-        return observation, reward, True if self.state == STATE_IN_DESTINATION or self.state == STATE_COLLISION else False, {}
+        return observation, reward, terminal, info
 
     def reset(self):
         self.state = STATE_IN_SAILING
@@ -117,7 +128,7 @@ class ShipEnv(object):
         for obstacle in self.static_obstacles:
             # whether occur collision between my ship and static obstacles
             if self.my_ship.rect.colliderect(obstacle):
-                self.state = STATE_COLLISION
+                self.state = STATE_COLLISION_WITH_OBSTACLES
                 return
 
             # Whether occur collision between other and static obstacles
@@ -128,7 +139,7 @@ class ShipEnv(object):
         # Whether occur collision between my ship and other ships
         for other_ship in self.other_ships:
             if other_ship.rect.colliderect(self.my_ship.rect):
-                self.state = STATE_COLLISION
+                self.state = STATE_COLLISION_WITH_SHIP
                 return
 
         # TODO: handle the collisions between other ships
